@@ -3,6 +3,7 @@
 
 cube cub;
 mesh a, b, c, d;
+mesh ggg;
 
 matrix projection;
 xmatrix xmat;
@@ -26,12 +27,16 @@ int main(){
   SDL_MANAGER m(&rect);
 
   triangle gt;
+
+  load_file("torus.obj", ggg);
+
   gt.vectors[0] = {0, 0.1, 0};
   gt.vectors[1] = {1, 0, 0};
   gt.vectors[2] = {0, 1, 0};
 
   vector* ght = normalize(gt);
 
+  std::cout << ggg.triangles[1].vectors[0].x;
   std::cout << ght->x << " " << ght->y << " " << ght->z << std::endl;
   std::cout.flush();
 
