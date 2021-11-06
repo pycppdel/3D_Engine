@@ -35,78 +35,120 @@ float dot_product(vector* a, vector*b){
   return (a->x*b->x+a->y*b->y+a->z*b->z);
 }
 
-void load_file(std::string name, mesh& into){
+
+
+bool load_file(std::string name, mesh& into){
 
 into.triangles.clear();
-std::fstream file;
-file.open(name.c_str(), std::ios::in);
 
+std::ifstream stream;
+
+try{
+  stream.open(name.c_str(), std::ios::in);
+}
+
+catch(...){
+  return false;
+}
+
+size_t pos, second_pos;
+std::string delim = " ";
+std::string second_delim = "/";
+std::string line;
+std::string code;
+std::string token;
 std::vector<vector> vectors;
+std::stringstream stringstr;
 
+while(std::getline(stream, line, '\n')){
 
-std::string number;
-std::stringstream stream;
+  token = line.substr(0, 1);
+  //clearing token from line
+  line.erase(0, 2);
 
-size_t pos1, pos2, pos3, pos4;
-float num1, num2, num3, num4;
+  if (token == "v"){
 
+    vector neu;
+    int runde = 0;
+    float r;
 
-while(std::getline(file, number)){
+    while((pos=line.find(delim)) != std::string::npos){
 
-if(number[0] == 'v'){
+      stringstr << line.substr(0, pos);
+      stringstr >> r;
+      switch(runde){
+        case 0: neu.x = r;
+                break;
+        case 1: neu.y = r;
+                break;
+      }
+      runde++;
+      stringstr.clear();
+      line.erase(0, pos+delim.length());
 
-pos1 = number.find(" ");
-pos2 = number.find(" ", pos1+1);
-pos3 = number.find(" ", pos2+1);
+    }
+    //finding last one
+    stringstr << line;
+    stringstr >> r;
+    neu.z = r;
+    stringstr.clear();
 
-stream << number.substr(pos1, pos2);
-stream >> num1;
-stream << number.substr(pos2, pos3);
-stream >> num2;
-stream << number.substr(pos3+1);
-stream >> num3;
+    // vector is determined
+    vectors.push_back(neu);
+  }
 
+  else if(token == "f"){
 
-vector g = {num1, num2, num3};
-vectors.push_back(g);
+    triangle tri, tri2;
+    float edges[4];
+    int round = 0;
+    while((pos=line.find(delim)) != std::string::npos){
 
+      code = line.substr(0, pos);
+      second_pos = code.find(second_delim);
+      stringstr << code.substr(0, second_pos);
+      stringstr >> edges[round];
+      edges[round]--;
+      stringstr.clear();
+      round++;
+      line.erase(0, pos+delim.length());
+
+    }
+    if(line[0] != std::string::npos){
+    code = line.substr(0, pos);
+    second_pos = code.find(second_delim);
+    stringstr << code.substr(0, second_pos);
+    stringstr >> edges[round];
+    edges[round]--;
+    stringstr.clear();
+  }
+    // for third one
+
+    //now constructing triangles
+    tri.vectors[0] = vectors[edges[0]];
+    tri.vectors[1] = vectors[edges[1]];
+    tri.vectors[2] = vectors[edges[2]];
+
+    if(line[0] != std::string::npos){
+
+    tri2.vectors[0] = vectors[edges[0]];
+    tri2.vectors[1] = vectors[edges[2]];
+    tri2.vectors[2] = vectors[edges[3]];
+
+  }
+
+  into.triangles.push_back(tri);
+
+  if(line[0] != std::string::npos){
+    into.triangles.push_back(tri2);
+  }
+
+  }
 
 }
-else if (number[0] == 'f'){
-
-  pos1 = number.find(" ");
-  pos2 = number.find(" ", pos1+1);
-  pos3 = number.find(" ", pos2+1);
-  pos4 = number.find(" ", pos4+1);
-
-  stream << number.substr(pos1, pos2);
-  stream >> num1;
-  stream << number.substr(pos2, pos3);
-  stream >> num2;
-  stream << number.substr(pos3, pos4);
-  stream >> num3;
-  stream << number.substr(pos4+1);
-  stream >> num4;
-
-  triangle m, m2;
-
-  m.vectors[0] = vectors[((int)num1)-1];
-  m.vectors[1] = vectors[((int)num2)-1];
-  m.vectors[2] = vectors[((int)num3)-1];
-
-  m2.vectors[0] = vectors[((int)num1)-1];
-  m2.vectors[1] = vectors[((int)num3)-1];
-  m2.vectors[2] = vectors[((int)num4)-1];
-
-  into.triangles.push_back(m);
-  into.triangles.push_back(m2);
 
 
+stream.close();
 
-
-}
-
-}
-
-file.close();
+return true;
 }

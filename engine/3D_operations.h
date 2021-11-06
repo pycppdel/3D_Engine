@@ -15,7 +15,7 @@
 struct vector* cross_product(struct vector*, struct vector*);
 struct vector* normalize(struct triangle&);
 float dot_product(vector*, vector*);
-void load_file(std::string, mesh&);
+bool load_file(std::string, mesh&);
 
 
 #endif

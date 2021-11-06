@@ -28,19 +28,17 @@ int main(){
 
   triangle gt;
 
-  load_file("torus.obj", ggg);
 
-  gt.vectors[0] = {0, 0.1, 0};
+  gt.vectors[0] = {0, 1, 0};
   gt.vectors[1] = {1, 0, 0};
   gt.vectors[2] = {0, 1, 0};
 
-  vector* ght = normalize(gt);
-
-  std::cout << ggg.triangles[1].vectors[0].x;
-  std::cout << ght->x << " " << ght->y << " " << ght->z << std::endl;
-  std::cout.flush();
-
   m.init("3D block");
+
+  load_file("torus.obj", ggg);
+
+  std::cout << ggg.triangles[0].vectors[0].x;
+  std::cout.flush();
 
   bool quit = false;
   SDL_Event e;
@@ -92,7 +90,7 @@ int main(){
     ymat.set_angle(-ycommon);
     zmat.set_angle(zcommon);
 
-    xmat.transform_mesh(cub, a);
+    xmat.transform_mesh(ggg, a);
     ymat.transform_mesh(a, b);
     zmat.transform_mesh(b, c);
     for(auto& tri: c.triangles){
