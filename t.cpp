@@ -10,6 +10,8 @@ xmatrix xmat;
 ymatrix ymat;
 zmatrix zmat;
 
+float z_distance = 4.0f;
+
 bool turning = false;
 
 struct parameters params;
@@ -75,6 +77,19 @@ int main(){
                       case SDL_BUTTON_LEFT:
                             turning = false;
                     }
+      case SDL_KEYDOWN:
+
+                    switch(e.key.keysym.sym){
+                      case SDLK_w:
+                                  z_distance += 0.5f;
+                                  break;
+                      case SDLK_s:
+                                  z_distance -= 0.5f;
+                    }
+                    break;
+
+
+
     }
 
     if (turning){
@@ -96,7 +111,7 @@ int main(){
     for(auto& tri: c.triangles){
 
       for(int i=0;i<3;i++){
-        tri.vectors[i].z += 4.0f;
+        tri.vectors[i].z += z_distance;
       }
     }
     projection.transform_mesh(c, d);
