@@ -13,3 +13,7 @@
 #ifndef __3D_OP__
 #include "3D_operations.h"
 #endif
+
+#ifndef __DRAW_OPERATIONS__
+#include "draw_operations.h"
+#endif
